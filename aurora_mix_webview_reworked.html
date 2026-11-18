@@ -1,272 +1,313 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>WeebCentral</title>
-
+<title>Web Viewer</title>
 <style>
-  :root{
-    color-scheme:dark;
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-
-  *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-  }
-
-  html,body{
-    width:100%;
-    height:100%;
-    margin:0;
-  }
-
-  body{
-    background:#000;
-    color:#f5f5f5;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-  }
-
-  .app{
-    width:100%;
-    max-width:560px;
-    min-height:min(720px,100%);
-    border:1px solid #25272d;
-    border-radius:28px;
-    background:
-      radial-gradient(circle at 50% 18%,rgba(255,70,95,.08),transparent 30%),
-      linear-gradient(180deg,#101116 0%,#0c0d10 100%);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:32px 24px;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
-  }
-
-  .logo{
-    width:min(260px,72vw);
-    height:auto;
-    margin-bottom:24px;
-    object-fit:contain;
-  }
-
-  .title{
-    margin:0;
-    font-size:32px;
-    line-height:1.1;
-    font-weight:800;
-    letter-spacing:-.04em;
-  }
-
-  .subtitle{
-    margin:12px 0 0;
-    max-width:420px;
-    color:#9da1aa;
-    font-size:14px;
-    line-height:1.5;
-  }
-
-  .indicator{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    width:100%;
-    margin:28px 0;
-  }
-
-  .line{
-    width:58px;
-    height:1px;
-    background:#292c33;
-  }
-
-  .dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:#ff4d63;
-    box-shadow:0 0 12px rgba(255,77,99,.45);
-  }
-
-  .open{
-    width:100%;
-    max-width:460px;
-    min-height:62px;
-    border:0;
-    border-radius:18px;
-    background:#ff4960;
-    color:#0d0d0f;
-    font-size:18px;
-    font-weight:800;
-    cursor:pointer;
-    box-shadow:0 8px 24px rgba(255,73,96,.20);
-    transition:transform .12s ease,filter .12s ease;
-  }
-
-  .open:active{
-    transform:scale(.985);
-    filter:brightness(.92);
-  }
-
-  .status{
-    margin-top:22px;
-    min-height:22px;
-    color:#8f949e;
-    font-size:13px;
-    line-height:1.5;
-  }
-
-  .status.ok{
-    color:#8bd9a7;
-  }
-
-  .status.error{
-    color:#ff7d8e;
-  }
-
-  .url{
-    margin-top:18px;
-    color:#686d77;
-    font-size:11px;
-    word-break:break-all;
-    opacity:.85;
-  }
+:root{--bg:#0e0f13;--bar:#16181e;--line:#262932;--tx:#eceef2;--mu:#8b909c;--ac:#4cc9f0;--ok:#7bd88f;--er:#ff7a8a;color-scheme:dark;
+font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);overflow:hidden}
+#app{display:flex;flex-direction:column;height:100%;padding-top:env(safe-area-inset-top,0)}
+.bar{display:flex;gap:6px;align-items:center;padding:8px;background:var(--bar);border-bottom:1px solid var(--line)}
+.bar button,.tabs button,.sheet button{background:#20232b;color:var(--tx);border:1px solid var(--line);border-radius:10px;min-width:40px;height:40px;font-size:16px}
+.bar button:active,.sheet button:active{filter:brightness(1.3)}
+.bar button:disabled{opacity:.35}
+#url{flex:1;min-width:0;height:40px;border-radius:10px;border:1px solid var(--line);background:#0b0c10;color:var(--tx);padding:0 12px;font-size:15px}
+#url:focus{outline:2px solid var(--ac)}
+.tabs{display:flex;gap:6px;padding:6px 8px;overflow-x:auto;background:var(--bar);border-bottom:1px solid var(--line)}
+.tabs button{height:32px;font-size:12px;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;padding:0 10px}
+.tabs button.on{border-color:var(--ac);color:var(--ac)}
+#stage{position:relative;flex:1;min-height:0;background:#fff}
+#stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
+#stage iframe.on{display:block}
+#reader{position:absolute;inset:0;overflow:auto;background:var(--bg);padding:16px;display:none;line-height:1.6;font-size:16px}
+#reader a{color:var(--ac)}#reader img{max-width:100%;height:auto}#reader pre{white-space:pre-wrap}
+#status{padding:6px 12px;font-size:12px;color:var(--mu);background:var(--bar);border-top:1px solid var(--line);min-height:28px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0))}
+#status.ok{color:var(--ok)}#status.er{color:var(--er)}
+.sheet{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;z-index:10;align-items:flex-end}
+.sheet.on{display:flex}
+.panel{width:100%;max-height:80%;overflow:auto;background:var(--bar);border-radius:18px 18px 0 0;padding:16px;border-top:1px solid var(--line)}
+.panel h3{margin:0 0 10px;font-size:16px}
+.panel label{display:block;margin:12px 0 4px;font-size:12px;color:var(--mu)}
+.panel input,.panel textarea,.panel select{width:100%;background:#0b0c10;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px}
+.panel textarea{min-height:80px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.item{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+pre.diag{white-space:pre-wrap;font-size:12px;line-height:1.5;color:var(--tx);background:#0b0c10;border-radius:10px;padding:10px}
+#home{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:20px;overflow:auto}
+#home h1{margin:0;font-size:22px}#home p{margin:0;color:var(--mu);font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chips button{height:40px;padding:0 14px;border-radius:20px;background:#20232b;border:1px solid var(--line);color:var(--tx)}
 </style>
 </head>
-
 <body>
-
-<main class="app">
-
-  <!-- No external image is required -->
-  <div style="
-    width:92px;
-    height:92px;
-    border-radius:24px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#171920;
-    border:1px solid #292c34;
-    margin-bottom:24px;
-    font-size:30px;
-    font-weight:900;
-    color:#fff;
-  ">W</div>
-
-  <h1 class="title">WeebCentral</h1>
-
-  <p class="subtitle">
-    Open the real WeebCentral website through the Sekai host.
-  </p>
-
-  <div class="indicator">
-    <span class="line"></span>
-    <span class="dot"></span>
-    <span class="line"></span>
+<div id="app">
+  <div class="bar">
+    <button id="bBack" title="Lùi" disabled>‹</button>
+    <button id="bFwd" title="Tiến" disabled>›</button>
+    <input id="url" type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Nhập link hoặc từ khóa">
+    <button id="bGo" title="Đi">↵</button>
+    <button id="bMenu" title="Menu">⋮</button>
   </div>
-
-  <button id="openBtn" class="open" type="button">
-    Open WeebCentral
-  </button>
-
-  <div id="status" class="status">
-    Checking web access…
+  <div class="tabs" id="tabs"></div>
+  <div id="stage">
+    <div id="home">
+      <h1>Web Viewer</h1>
+      <p>Nhập link hoặc từ khóa ở thanh trên. Trang sẽ tự thử từng cách mở cho đến khi được.</p>
+      <div class="chips" id="quick"></div>
+    </div>
+    <iframe id="frame" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>
+    <div id="reader"></div>
   </div>
+  <div id="status">Sẵn sàng.</div>
 
-  <div class="url">
-    https://weebcentral.com/
-  </div>
-
-</main>
+  <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+</div>
 
 <script>
 (() => {
+"use strict";
+/* ---------- storage (có thể bị chặn trong Sekai → dùng bộ nhớ tạm) ---------- */
+const mem = {};
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v==null ? (k in mem ? mem[k] : d) : JSON.parse(v);}catch(e){ return k in mem ? mem[k] : d; } },
+  set(k, v){ mem[k]=v; try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const $ = id => document.getElementById(id);
+const frame=$("frame"), reader=$("reader"), home=$("home"), statusEl=$("status"), urlEl=$("url");
 
-  const TARGET_URL = "https://weebcentral.com/";
+/* ---------- cấu hình ---------- */
+const DEFAULT_PROXIES = [
+  "https://api.allorigins.win/raw?url={url}",
+  "https://corsproxy.io/?url={url}",
+  "https://api.codetabs.com/v1/proxy/?quest={url}"
+];
+const QUICK = [["Wikipedia","https://en.wikipedia.org/"],["Google","https://www.google.com/"],["DuckDuckGo","https://html.duckduckgo.com/html/"],["Bing","https://www.bing.com/"]];
+let cfg = store.get("cfg", {mode:"auto", proxies: DEFAULT_PROXIES.join("\n"), search:"https://www.google.com/search?q={q}&igu=1"});
+let tabs = store.get("tabs", [{url:"", title:"Tab 1", hist:[], pos:-1}]);
+let cur = 0, bookmarks = store.get("bm", []);
 
-  const button = document.getElementById("openBtn");
-  const status = document.getElementById("status");
+/* ---------- tiện ích ---------- */
+function say(t, cls){ statusEl.textContent=t; statusEl.className = cls||""; }
+function normalize(raw){
+  raw = raw.trim(); if(!raw) return "";
+  if(/^https?:\/\//i.test(raw)) return raw;
+  if(/^[\w-]+(\.[\w-]+)+(:\d+)?(\/.*)?$/.test(raw)) return "https://"+raw;
+  return cfg.search.replace("{q}", encodeURIComponent(raw));
+}
+/* Chuyển link sang dạng nhúng được nếu biết trước site chặn khung */
+function embedRewrite(u){
+  try{
+    const x = new URL(u), h = x.hostname.replace(/^www\./,"");
+    if(/(^|\.)google\.[a-z.]+$/.test(h) && x.pathname.startsWith("/search")) x.searchParams.set("igu","1");
+    if(h==="google.com" && x.pathname==="/") x.searchParams.set("igu","1");
+    if((h==="youtube.com"||h==="m.youtube.com") && x.pathname==="/watch" && x.searchParams.get("v"))
+      return "https://www.youtube-nocookie.com/embed/"+x.searchParams.get("v");
+    if(h==="youtu.be") return "https://www.youtube-nocookie.com/embed/"+x.pathname.slice(1);
+    return x.href;
+  }catch(e){ return u; }
+}
+function proxyList(){ return cfg.proxies.split("\n").map(s=>s.trim()).filter(Boolean); }
 
-  function getBridge() {
-    const bridge = window.sekaiBridge;
+/* ---------- hiển thị ---------- */
+function show(which){
+  home.style.display = which==="home" ? "flex":"none";
+  frame.classList.toggle("on", which==="frame");
+  reader.style.display = which==="reader" ? "block":"none";
+}
+function renderTabs(){
+  const el=$("tabs"); el.innerHTML="";
+  tabs.forEach((t,i)=>{
+    const b=document.createElement("button"); b.textContent=t.title||"Tab"; if(i===cur) b.className="on";
+    b.onclick=()=>{cur=i; restore();}; el.appendChild(b);
+  });
+  const n=document.createElement("button"); n.textContent="+"; n.onclick=()=>{tabs.push({url:"",title:"Tab "+(tabs.length+1),hist:[],pos:-1}); cur=tabs.length-1; restore();}; el.appendChild(n);
+}
+function restore(){
+  const t=tabs[cur]; urlEl.value=t.url||""; renderTabs(); navButtons();
+  if(t.url) load(t.url,{push:false}); else { show("home"); say("Sẵn sàng."); }
+  store.set("tabs", tabs.map(x=>({url:x.url,title:x.title,hist:x.hist.slice(-30),pos:Math.min(x.pos,29)})));
+}
+function navButtons(){ const t=tabs[cur]; $("bBack").disabled = t.pos<=0; $("bFwd").disabled = t.pos>=t.hist.length-1; }
 
-    if (
-      bridge &&
-      typeof bridge.openUrl === "function"
-    ) {
-      return bridge;
-    }
-
-    return null;
+/* ---------- các cách mở ---------- */
+let token = 0;
+function viaDirect(u, my){
+  return new Promise((res,rej)=>{
+    show("frame"); frame.removeAttribute("srcdoc");
+    let done=false;
+    frame.onload=()=>{ if(done||my!==token) return; done=true; res(); };
+    frame.src = embedRewrite(u);
+    setTimeout(()=>{ if(!done && my===token){ done=true; rej(new Error("hết thời gian chờ")); } }, 9000);
+  });
+}
+async function fetchViaProxy(u){
+  const errs=[];
+  for(const p of proxyList()){
+    try{
+      const ctl = new AbortController(); const to=setTimeout(()=>ctl.abort(),12000);
+      const r = await fetch(p.replace("{url}", encodeURIComponent(u)), {signal:ctl.signal}); clearTimeout(to);
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const txt = await r.text();
+      if(txt.length<200) throw new Error("nội dung rỗng");
+      return {html:txt, proxy:p};
+    }catch(e){ errs.push(new URL(p.split("{")[0]).host+": "+e.message); }
   }
+  throw new Error(errs.join(" | ")||"không có proxy nào");
+}
+async function viaProxy(u, my){
+  const {html,proxy} = await fetchViaProxy(u); if(my!==token) return;
+  const doc = new DOMParser().parseFromString(html,"text/html");
+  doc.querySelectorAll('meta[http-equiv="Content-Security-Policy" i],meta[http-equiv="refresh" i]').forEach(n=>n.remove());
+  const base = doc.createElement("base"); base.href = u; doc.head.prepend(base);
+  /* link bấm trong trang → báo về viewer để mở lại bằng chính viewer */
+  const s = doc.createElement("script");
+  s.textContent = 'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a)return;var h=a.href;if(!/^https?:/i.test(h))return;e.preventDefault();parent.postMessage({wv:"nav",url:h},"*")},true);'+
+                  'document.addEventListener("submit",function(e){var f=e.target;if(f.method&&f.method.toLowerCase()!=="get")return;e.preventDefault();var q=new URLSearchParams(new FormData(f)).toString();var a=new URL(f.getAttribute("action")||"",document.baseURI);a.search=q;parent.postMessage({wv:"nav",url:a.href},"*")},true);';
+  doc.body ? doc.body.appendChild(s) : doc.documentElement.appendChild(s);
+  show("frame"); frame.removeAttribute("src");
+  frame.srcdoc = "<!DOCTYPE html>"+doc.documentElement.outerHTML;
+  return proxy;
+}
+/* Chế độ đọc: r.jina.ai trả về văn bản markdown của trang */
+function md(t){
+  const esc = s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  return esc(t)
+    .replace(/!\[([^\]]*)\]\((https?:[^)\s]+)[^)]*\)/g,'<img alt="$1" src="$2">')
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)[^)]*\)/g,'<a href="$2" data-nav="1">$1</a>')
+    .replace(/^### (.*)$/gm,"<h4>$1</h4>").replace(/^## (.*)$/gm,"<h3>$1</h3>").replace(/^# (.*)$/gm,"<h2>$1</h2>")
+    .replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\n{2,}/g,"<br><br>").replace(/\n/g,"<br>");
+}
+async function viaReader(u, my){
+  const r = await fetch("https://r.jina.ai/"+u); if(!r.ok) throw new Error("HTTP "+r.status);
+  const t = await r.text(); if(my!==token) return;
+  reader.innerHTML = md(t); reader.scrollTop=0; show("reader");
+}
+reader.addEventListener("click",e=>{ const a=e.target.closest("a[data-nav]"); if(a){ e.preventDefault(); go(a.href); }});
+window.addEventListener("message",e=>{ if(e.data && e.data.wv==="nav" && typeof e.data.url==="string") go(e.data.url); });
 
-  function updateStatus() {
-    const bridge = getBridge();
+/* cầu nối gốc của Sekai (nếu runtime có) */
+function nativeBridge(u){
+  const get=[()=>window.sekaiBridge, ()=>window.parent!==window?window.parent.sekaiBridge:null];
+  for(const g of get){ try{ const b=g(); if(b && typeof b.openUrl==="function"){ b.openUrl(u); return true; } }catch(e){} }
+  return false;
+}
+function viaExternal(u){ const w = window.open(u,"_blank","noopener"); return !!w; }
 
-    if (bridge) {
-      status.textContent = "Sekai web access detected.";
-      status.className = "status ok";
-      return true;
-    }
-
-    status.textContent =
-      "Sekai web access is not exposed in this runtime.";
-
-    status.className = "status error";
-
-    return false;
+/* ---------- điều hướng ---------- */
+async function load(u, opt){
+  opt = opt||{push:true}; const my=++token, t=tabs[cur]; const mode=cfg.mode;
+  t.url=u; urlEl.value=u;
+  if(opt.push!==false){ t.hist=t.hist.slice(0,t.pos+1); t.hist.push(u); t.pos=t.hist.length-1; }
+  try{ t.title=new URL(u).hostname.replace(/^www\./,""); }catch(e){}
+  renderTabs(); navButtons(); persist();
+  const order = mode==="auto" ? ["direct","proxy","reader","native","external"] : [mode];
+  const fails=[];
+  for(const m of order){
+    if(my!==token) return;
+    say("Đang mở ("+m+")…");
+    try{
+      if(m==="direct"){ await viaDirect(u,my); t.lastMode="direct"; say("Đã mở trực tiếp. Nếu trang trống/báo lỗi, bấm ⋮ → Thử cách khác.","ok"); return; }
+      if(m==="proxy"){ const p=await viaProxy(u,my); t.lastMode="proxy"; say("Đã mở qua proxy: "+new URL(p.split("{")[0]).host+". Đừng đăng nhập ở chế độ này.","ok"); return; }
+      if(m==="reader"){ await viaReader(u,my); t.lastMode="reader"; say("Chế độ đọc (chỉ văn bản + ảnh).","ok"); return; }
+      if(m==="native"){ if(nativeBridge(u)){ say("Đã gửi cho cầu nối của Sekai.","ok"); return; } throw new Error("không có cầu nối"); }
+      if(m==="external"){ if(viaExternal(u)){ t.lastMode="external"; say("Đã mở ở tab/trình duyệt ngoài.","ok"); return; } throw new Error("bị chặn popup"); }
+    }catch(e){ fails.push(m+": "+e.message); }
   }
+  show("home"); say("Không mở được. "+fails.join(" • "),"er");
+}
+/* Chế độ auto: direct luôn "thành công" vì iframe bị chặn vẫn bắn onload → đo bằng nút Thử cách khác */
+function go(raw){ const u=normalize(raw); if(!u) return; load(u,{push:true}); }
+function persist(){ store.set("tabs", tabs.map(x=>({url:x.url,title:x.title,hist:x.hist.slice(-30),pos:Math.min(x.pos,29)}))); }
+function step(d){ const t=tabs[cur]; const p=t.pos+d; if(p<0||p>=t.hist.length) return; t.pos=p; load(t.hist[p],{push:false}); }
 
-  function openWebsite() {
+/* ---------- menu / bảng ---------- */
+function sheet(html){ $("panel").innerHTML=html; $("sheet").classList.add("on"); }
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") $("sheet").classList.remove("on"); });
+const modes=[["auto","Tự động"],["direct","Trực tiếp"],["proxy","Proxy"],["reader","Chế độ đọc"],["external","Tab ngoài"]];
+function menu(){
+  sheet(`<h3>Menu</h3>
+  <div class="row">
+    <button id="m1">Tải lại</button><button id="m2">Thử cách khác</button><button id="m3">★ Lưu trang</button>
+    <button id="m4">Dấu trang</button><button id="m5">Cài đặt</button><button id="m6">Chẩn đoán</button><button id="m7">Đóng tab</button>
+  </div>
+  <label>Chế độ mở</label>
+  <select id="mm">${modes.map(m=>`<option value="${m[0]}"${cfg.mode===m[0]?" selected":""}>${m[1]}</option>`).join("")}</select>`);
+  $("mm").onchange=e=>{cfg.mode=e.target.value; store.set("cfg",cfg); say("Chế độ: "+e.target.selectedOptions[0].text);};
+  $("m1").onclick=()=>{close(); const u=tabs[cur].url; if(u) load(u,{push:false});};
+  $("m2").onclick=()=>{close(); nextMode();};
+  $("m3").onclick=()=>{const u=tabs[cur].url; if(u&&!bookmarks.includes(u)){bookmarks.push(u); store.set("bm",bookmarks);} close(); say("Đã lưu dấu trang.","ok");};
+  $("m4").onclick=showBookmarks; $("m5").onclick=showSettings; $("m6").onclick=diagnose;
+  $("m7").onclick=()=>{ if(tabs.length>1){tabs.splice(cur,1); cur=Math.max(0,cur-1);} else {tabs[0]={url:"",title:"Tab 1",hist:[],pos:-1};} close(); restore(); };
+}
+function close(){ $("sheet").classList.remove("on"); }
+/* xoay vòng qua các cách khi một cách "mở được nhưng trống" */
+function nextMode(){
+  const t=tabs[cur]; if(!t.url) return; const seq=["direct","proxy","reader","external"];
+  const i=seq.indexOf(t.lastMode||"direct"); const m=seq[(i+1)%seq.length]; t.lastMode=m;
+  const my=++token; say("Thử cách: "+m+"…");
+  (async()=>{ try{
+    if(m==="direct") await viaDirect(t.url,my);
+    else if(m==="proxy"){ const p=await viaProxy(t.url,my); say("Đã mở qua proxy. Đừng đăng nhập ở chế độ này.","ok"); return; }
+    else if(m==="reader") await viaReader(t.url,my);
+    else if(!viaExternal(t.url)) throw new Error("bị chặn popup");
+    say("Đã mở bằng: "+m+". Chưa ổn thì bấm Thử cách khác lần nữa.","ok");
+  }catch(e){ say("Cách "+m+" lỗi: "+e.message+". Bấm Thử cách khác để đổi.","er"); } })();
+}
+function showBookmarks(){
+  sheet(`<h3>Dấu trang</h3>${bookmarks.length?bookmarks.map((b,i)=>`<div class="item"><span data-g="${i}">${b}</span><button data-d="${i}">✕</button></div>`).join(""):"<p style='color:var(--mu)'>Chưa có dấu trang.</p>"}`);
+  $("panel").querySelectorAll("[data-g]").forEach(n=>n.onclick=()=>{close(); go(bookmarks[n.dataset.g]);});
+  $("panel").querySelectorAll("[data-d]").forEach(n=>n.onclick=()=>{bookmarks.splice(n.dataset.d,1); store.set("bm",bookmarks); showBookmarks();});
+}
+function showSettings(){
+  sheet(`<h3>Cài đặt</h3>
+  <label>Danh sách proxy (mỗi dòng một cái, dùng {url} làm chỗ chèn link)</label>
+  <textarea id="sp">${cfg.proxies}</textarea>
+  <label>Link tìm kiếm ({q} là từ khóa)</label>
+  <input id="ss" value="${cfg.search}">
+  <div class="row"><button id="sv">Lưu</button><button id="sr">Khôi phục mặc định</button></div>
+  <p style="color:var(--mu);font-size:12px">Proxy công cộng là dịch vụ bên thứ ba: họ thấy mọi trang bạn mở qua đó. Không nhập mật khẩu ở chế độ proxy.</p>`);
+  $("sv").onclick=()=>{cfg.proxies=$("sp").value; cfg.search=$("ss").value||cfg.search; store.set("cfg",cfg); close(); say("Đã lưu cài đặt.","ok");};
+  $("sr").onclick=()=>{cfg.proxies=DEFAULT_PROXIES.join("\n"); cfg.search="https://www.google.com/search?q={q}&igu=1"; store.set("cfg",cfg); showSettings();};
+}
+/* ---------- chẩn đoán: cho biết runtime Sekai cho phép gì ---------- */
+async function diagnose(){
+  sheet(`<h3>Chẩn đoán</h3><pre class="diag" id="dg">Đang kiểm tra…</pre><div class="row"><button id="dc">Sao chép kết quả</button></div>`);
+  const L=[]; const add=(k,v)=>L.push(k+": "+v);
+  let inFrame=false; try{ inFrame = window.top!==window; }catch(e){ inFrame=true; }
+  add("Chạy trong iframe", inFrame);
+  add("Origin", location.origin);
+  add("UserAgent", navigator.userAgent.slice(0,110));
+  let ls="không"; try{ localStorage.setItem("_t","1"); localStorage.removeItem("_t"); ls="có"; }catch(e){}
+  add("localStorage", ls);
+  const names=["sekaiBridge","ReactNativeWebView","Android","AndroidBridge","webkit","flutter_inappwebview","__sekai","sekai"];
+  names.forEach(n=>{ let v="không"; try{ if(n==="webkit") v = !!(window.webkit&&window.webkit.messageHandlers)?"có":"không"; else v = (n in window)?"có":"không"; }catch(e){} add("window."+n, v); });
+  try{ const f=document.createElement("iframe"); f.style.display="none"; document.body.appendChild(f);
+       const base=new Set(Object.getOwnPropertyNames(f.contentWindow)); document.body.removeChild(f);
+       const extra=Object.getOwnPropertyNames(window).filter(k=>!base.has(k) && !/^(on|webkit|_)/i.test(k)).slice(0,30);
+       add("Biến lạ trên window", extra.join(", ")||"(không có)"); }catch(e){ add("Biến lạ trên window","lỗi "+e.message); }
+  let po="chặn"; try{ const w=window.open("about:blank","_blank"); if(w){po="cho phép"; w.close();} }catch(e){} add("window.open", po);
+  const tests=[["iframe example.com","https://example.com/"],["iframe wikipedia","https://en.wikipedia.org/"],["iframe google","https://www.google.com/?igu=1"]];
+  for(const [n,u] of tests){ try{ const t0=Date.now(); await new Promise((ok,no)=>{const f=document.createElement("iframe"); f.style.display="none"; f.onload=()=>{document.body.removeChild(f); ok();}; document.body.appendChild(f); f.src=u; setTimeout(()=>no(new Error("timeout")),7000);}); add(n,"load OK ("+(Date.now()-t0)+"ms; không chứng minh hiển thị được)"); }catch(e){ add(n,"lỗi "+e.message); } }
+  for(const p of proxyList()){ const host=new URL(p.split("{")[0]).host; try{ const r=await fetch(p.replace("{url}",encodeURIComponent("https://example.com/"))); add("proxy "+host, r.ok?"OK":"HTTP "+r.status);}catch(e){ add("proxy "+host,"lỗi "+e.message);} }
+  try{ const r=await fetch("https://r.jina.ai/https://example.com/"); add("reader r.jina.ai", r.ok?"OK":"HTTP "+r.status);}catch(e){ add("reader r.jina.ai","lỗi "+e.message); }
+  const out=L.join("\n"); $("dg").textContent=out;
+  $("dc").onclick=()=>{ try{ navigator.clipboard.writeText(out); say("Đã sao chép.","ok"); }catch(e){ say("Không sao chép được, hãy chụp màn hình.","er"); } };
+}
 
-    const bridge = getBridge();
-
-    if (!bridge) {
-
-      status.textContent =
-        "openUrl() is unavailable in this Sekai runtime.";
-
-      status.className = "status error";
-
-      return;
-    }
-
-    status.textContent =
-      "Opening WeebCentral…";
-
-    status.className = "status ok";
-
-    try {
-
-      bridge.openUrl(TARGET_URL);
-
-    } catch (error) {
-
-      status.textContent =
-        "Failed to open website: " +
-        (error?.message || String(error));
-
-      status.className = "status error";
-    }
-  }
-
-  button.addEventListener(
-    "click",
-    openWebsite
-  );
-
-  updateStatus();
-
+/* ---------- gắn sự kiện ---------- */
+$("bGo").onclick=()=>go(urlEl.value);
+urlEl.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(urlEl.value); urlEl.blur(); }});
+$("bBack").onclick=()=>step(-1); $("bFwd").onclick=()=>step(1); $("bMenu").onclick=menu;
+QUICK.forEach(([n,u])=>{ const b=document.createElement("button"); b.textContent=n; b.onclick=()=>go(u); $("quick").appendChild(b); });
+/* mở ngay từ tham số: ?u=https://... hoặc #https://... */
+let q=new URLSearchParams(location.search).get("u")||""; if(!q){ try{ q=decodeURIComponent(location.hash.slice(1)); }catch(e){ q=""; } }
+try{ parent.postMessage({wv:"ready"},"*"); }catch(e){}
+restore();
+if(q && /^https?:\/\//i.test(q)) go(q);
 })();
 </script>
-
 </body>
 </html>
