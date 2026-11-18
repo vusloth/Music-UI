@@ -3,122 +3,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>WeebCentral Web Hook</title>
+<title>WeebCentral</title>
+
 <style>
-  :root { color-scheme: dark; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  * { box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; margin: 0; }
-  body {
-    background: #0b0c0f;
-    color: #f4f5f7;
-    display: grid;
-    place-items: center;
-    padding: 20px;
+  :root{
+    color-scheme:dark;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   }
-  .card {
-    width: min(560px, 100%);
-    border: 1px solid #252832;
-    background: linear-gradient(180deg, #14161b, #0f1014);
-    border-radius: 22px;
-    padding: 22px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+
+  *{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
   }
-  h1 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
-  p { margin: 0; color: #aeb3be; line-height: 1.5; font-size: 14px; }
-  .target {
-    margin: 16px 0;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: #101218;
-    border: 1px solid #242833;
-    font-size: 13px;
-    overflow-wrap: anywhere;
+
+  html,body{
+    width:100%;
+    height:100%;
+    margin:0;
   }
-  .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 8px;
-    background: #8a8f9d;
+
+  body{
+    background:#000;
+    color:#f5f5f5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
   }
-  .dot.ok { background: #62d68a; }
-  .dot.bad { background: #ff7272; }
-  button {
-    width: 100%;
-    margin-top: 12px;
-    border: 0;
-    border-radius: 14px;
-    padding: 13px 16px;
-    background: #f2f3f5;
-    color: #0d0e11;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
+
+  .app{
+    width:100%;
+    max-width:560px;
+    min-height:min(720px,100%);
+    border:1px solid #25272d;
+    border-radius:28px;
+    background:
+      radial-gradient(circle at 50% 18%,rgba(255,70,95,.08),transparent 30%),
+      linear-gradient(180deg,#101116 0%,#0c0d10 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:32px 24px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
   }
-  button:active { transform: scale(.99); }
-  .hint { margin-top: 12px; font-size: 12px; color: #858b97; }
-  code { color: #d5d8df; }
+
+  .logo{
+    width:min(260px,72vw);
+    height:auto;
+    margin-bottom:24px;
+    object-fit:contain;
+  }
+
+  .title{
+    margin:0;
+    font-size:32px;
+    line-height:1.1;
+    font-weight:800;
+    letter-spacing:-.04em;
+  }
+
+  .subtitle{
+    margin:12px 0 0;
+    max-width:420px;
+    color:#9da1aa;
+    font-size:14px;
+    line-height:1.5;
+  }
+
+  .indicator{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    margin:28px 0;
+  }
+
+  .line{
+    width:58px;
+    height:1px;
+    background:#292c33;
+  }
+
+  .dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#ff4d63;
+    box-shadow:0 0 12px rgba(255,77,99,.45);
+  }
+
+  .open{
+    width:100%;
+    max-width:460px;
+    min-height:62px;
+    border:0;
+    border-radius:18px;
+    background:#ff4960;
+    color:#0d0d0f;
+    font-size:18px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(255,73,96,.20);
+    transition:transform .12s ease,filter .12s ease;
+  }
+
+  .open:active{
+    transform:scale(.985);
+    filter:brightness(.92);
+  }
+
+  .status{
+    margin-top:22px;
+    min-height:22px;
+    color:#8f949e;
+    font-size:13px;
+    line-height:1.5;
+  }
+
+  .status.ok{
+    color:#8bd9a7;
+  }
+
+  .status.error{
+    color:#ff7d8e;
+  }
+
+  .url{
+    margin-top:18px;
+    color:#686d77;
+    font-size:11px;
+    word-break:break-all;
+    opacity:.85;
+  }
 </style>
 </head>
+
 <body>
-  <main class="card">
-    <h1>WeebCentral</h1>
-    <p>This page is only a launcher. It asks the Sekai host to open the real WeebCentral website.</p>
 
-    <div class="target">
-      <span class="dot" id="dot"></span>
-      <span id="statusText">Checking Sekai bridge…</span>
-      <div style="margin-top:8px;color:#d5d8df;">https://weebcentral.com/</div>
-    </div>
+<main class="app">
 
-    <button id="openBtn" type="button">OPEN WEeBCENTRAL</button>
+  <!-- No external image is required -->
+  <div style="
+    width:92px;
+    height:92px;
+    border-radius:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#171920;
+    border:1px solid #292c34;
+    margin-bottom:24px;
+    font-size:30px;
+    font-weight:900;
+    color:#fff;
+  ">W</div>
 
-    <div class="hint">
-      Uses <code>sekaiBridge.openUrl()</code>. No iframe, fetch, XHR, proxy, or fake website is used here.
-    </div>
-  </main>
+  <h1 class="title">WeebCentral</h1>
+
+  <p class="subtitle">
+    Open the real WeebCentral website through the Sekai host.
+  </p>
+
+  <div class="indicator">
+    <span class="line"></span>
+    <span class="dot"></span>
+    <span class="line"></span>
+  </div>
+
+  <button id="openBtn" class="open" type="button">
+    Open WeebCentral
+  </button>
+
+  <div id="status" class="status">
+    Checking web access…
+  </div>
+
+  <div class="url">
+    https://weebcentral.com/
+  </div>
+
+</main>
 
 <script>
 (() => {
-  const TARGET_URL = 'https://weebcentral.com/';
-  const dot = document.getElementById('dot');
-  const statusText = document.getElementById('statusText');
-  const openBtn = document.getElementById('openBtn');
+
+  const TARGET_URL = "https://weebcentral.com/";
+
+  const button = document.getElementById("openBtn");
+  const status = document.getElementById("status");
 
   function getBridge() {
     const bridge = window.sekaiBridge;
-    return bridge && typeof bridge.openUrl === 'function' ? bridge : null;
+
+    if (
+      bridge &&
+      typeof bridge.openUrl === "function"
+    ) {
+      return bridge;
+    }
+
+    return null;
   }
 
-  function updateBridgeStatus() {
+  function updateStatus() {
     const bridge = getBridge();
+
     if (bridge) {
-      dot.className = 'dot ok';
-      statusText.textContent = 'Sekai bridge detected.';
-    } else {
-      dot.className = 'dot bad';
-      statusText.textContent = 'Sekai bridge not detected. Run this inside Sekai.';
+      status.textContent = "Sekai web access detected.";
+      status.className = "status ok";
+      return true;
     }
-    return bridge;
+
+    status.textContent =
+      "Sekai web access is not exposed in this runtime.";
+
+    status.className = "status error";
+
+    return false;
   }
 
-  function openTarget() {
-    const bridge = updateBridgeStatus();
-    if (!bridge) return;
+  function openWebsite() {
 
-    statusText.textContent = 'Opening WeebCentral…';
+    const bridge = getBridge();
+
+    if (!bridge) {
+
+      status.textContent =
+        "openUrl() is unavailable in this Sekai runtime.";
+
+      status.className = "status error";
+
+      return;
+    }
+
+    status.textContent =
+      "Opening WeebCentral…";
+
+    status.className = "status ok";
+
     try {
+
       bridge.openUrl(TARGET_URL);
-    } catch (err) {
-      dot.className = 'dot bad';
-      statusText.textContent = 'openUrl() failed: ' + (err?.message || String(err));
+
+    } catch (error) {
+
+      status.textContent =
+        "Failed to open website: " +
+        (error?.message || String(error));
+
+      status.className = "status error";
     }
   }
 
-  openBtn.addEventListener('click', openTarget);
-  updateBridgeStatus();
+  button.addEventListener(
+    "click",
+    openWebsite
+  );
+
+  updateStatus();
+
 })();
 </script>
+
 </body>
 </html>
