@@ -1,173 +1,124 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YouTube Music — UI Only</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WeebCentral Web Hook</title>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#030303;--sub:#aaa;--chip:rgba(255,255,255,.1);--ln:rgba(255,255,255,.22);color-scheme:dark;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-html,body{height:100%;margin:0;background:var(--bg);color:#fff;font:16px/1.25 Roboto,"Segoe UI",system-ui,sans-serif;overflow:hidden}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:99}
-::-webkit-scrollbar{display:none}
-button{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-svg{fill:currentColor;fill-rule:evenodd;display:block}
-.dots i,.eq i{display:block}
-h2,h3,p{margin:0}
-#app{position:relative;height:100%;max-width:430px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
-.vs{flex:1;position:relative;min-height:0}
-.v{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:24px}.v.on{display:block}
-.hr{position:sticky;top:0;z-index:5;background:var(--bg);height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
-.hr h1{margin:0;font-size:24px;font-weight:700}
-.lg{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.8px}
-.ri{display:flex;align-items:center;gap:22px}
-.bell{position:relative;display:flex}.bell em{position:absolute;top:-7px;right:-6px;background:#f03;font:700 11px/16px Roboto,sans-serif;min-width:16px;text-align:center;border-radius:8px}
-.av{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0a85c,#2d3b4a);flex:none;display:block;cursor:pointer}
-.ch{display:flex;gap:8px;padding:6px 16px 14px;overflow-x:auto}
-.ch button,.cq button{height:33px;padding:0 16px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;white-space:nowrap;flex:none}
-.cq{display:flex;gap:8px;padding:6px 19px 14px;overflow-x:auto}.cq .on{background:#fff;color:#000}
-.qh{display:flex;align-items:center;gap:12px;padding:16px 16px 12px}.qh>div{flex:1}.qh small{display:block;color:var(--sub);font-size:12px;letter-spacing:.3px}.qh h3{font-size:22px;font-weight:700}
-.qp{display:grid;grid-template-rows:repeat(3,auto);grid-auto-flow:column;grid-auto-columns:calc((100% - 10px)/3);gap:5px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px;scroll-padding:0 16px}
-.t{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;display:flex;align-items:flex-end;padding:9px;cursor:pointer}
-.t::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.72))}
-.t b{position:relative;z-index:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 16px)}
-.pn{position:absolute;z-index:1;top:7px;right:7px;filter:drop-shadow(0 1px 2px #000)}.cv{position:absolute;z-index:1;bottom:7px;right:5px}
-.dots{display:flex;justify-content:center;gap:8px;padding:16px 0 6px}.dots i{width:8px;height:8px;border-radius:50%;background:#555}.dots .on{background:#fff}
-.sh{display:flex;justify-content:space-between;align-items:center;padding:24px 16px 12px}.sh h3{font-size:22px;font-weight:700}
-.row{display:flex;gap:12px;overflow-x:auto;padding:0 16px}
-.cd{flex:0 0 140px;cursor:pointer}.cd div{width:140px;height:140px;border-radius:6px}.cd b{display:block;margin-top:8px;font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cd small{color:var(--sub);font-size:13px}
-.rc{flex:0 0 172px;height:112px;border-radius:10px;padding:10px;font-weight:700;color:#000;font-size:17px;position:relative}.rc::before{content:"";display:block;width:20px;height:20px;border-radius:50%;background:#000;border:4px solid #ffcf2e;margin-bottom:34px}
-.sc{display:flex;gap:8px;padding:6px 16px 4px}.sc button{flex:1;height:52px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;text-align:center;padding:0 8px}
-.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px}.mg button{height:48px;border-radius:4px;background:var(--chip);justify-content:flex-start;padding:0 14px;border-left:6px solid var(--c);font-size:15px;font-weight:500}
-.ls{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 10px;font-size:15px;color:#ddd}.ls span{display:flex;align-items:center;gap:6px}
-.li{display:flex;align-items:center;gap:16px;height:77px;padding:0 8px 0 16px;cursor:pointer}.li .a{width:59px;height:59px;border-radius:3px;flex:none;display:flex;align-items:center;justify-content:center}.li .rd{border-radius:50%}.li .m{flex:1;min-width:0}.li b{display:block;font-size:16px;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.li small{color:var(--sub);font-size:14px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;margin-top:2px}.e{background:#aaa;color:#000;font:700 11px/16px sans-serif;width:16px;height:16px;text-align:center;border-radius:2px;flex:none}
-#fab{position:absolute;right:16px;bottom:16px;height:51px;padding:0 24px;border-radius:26px;background:#fff;color:#000;gap:10px;font-size:16px;font-weight:500;box-shadow:0 2px 12px #000a;z-index:6;display:none}
-#mini{background:var(--bg)}
-.mm{height:64px;display:flex;align-items:center;padding:0 8px 0 16px;gap:4px}#mn{display:flex;align-items:center;gap:18px;flex:1;min-width:0;cursor:pointer}.mi{width:51px;height:29px;border-radius:3px;flex:none}.mx{min-width:0;font-size:15px}#mt{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#ma{color:var(--sub)}.mc{display:flex}.mc button{width:42px;height:42px}.mpl{height:2px;background:var(--ln)}.mpl i{display:block;height:100%;background:#fff;width:28%}
-nav{display:flex;height:60px;background:var(--bg)}nav button{flex:1;flex-direction:column;gap:3px;font-size:12px}
-#pl{position:absolute;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .32s cubic-bezier(.2,.8,.2,1);overflow:hidden}#pl.open{transform:none}#pl>:not(#bg){position:relative}
-#bg{position:absolute;left:0;right:0;top:0;height:340px;opacity:.9;filter:blur(18px);transform:scale(1.25);background:radial-gradient(circle at 70% 28%,rgba(210,100,255,.95),transparent 52%),linear-gradient(160deg,#6a2e8f,#103b45);-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
-.top{display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 12px;flex:none}.top>button{width:40px;height:40px}.seg{display:flex;background:rgba(255,255,255,.12);border-radius:20px;overflow:hidden}.seg button{width:46px;height:36px;border-radius:18px}.seg .on{background:rgba(255,255,255,.3)}
-.art{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}.vid{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#000}.vid::before{content:"";position:absolute;inset:-20px;background:var(--g);filter:blur(16px);opacity:.65}.fg{position:absolute;left:50%;top:0;height:100%;aspect-ratio:9/16;transform:translateX(-50%);background:var(--g)}.audio .vid{width:min(300px,78%);aspect-ratio:1;border-radius:8px}.audio .vid::before{display:none}.audio .fg{inset:0;aspect-ratio:auto;transform:none;width:100%}
-.info{padding:0 19px;flex:none}.tt{display:flex;align-items:center;justify-content:space-between;gap:8px}.tt h2{font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}#pa{color:var(--sub);font-size:16px;margin-top:4px}
-.ac2{display:flex;gap:8px;padding:16px 19px 0;overflow-x:auto;flex:none}.pill{height:34px;padding:0 14px;border-radius:17px;background:var(--chip);display:flex;align-items:center;gap:10px;flex:none;font-size:15px;font-weight:500;cursor:pointer}.pill.on{background:rgba(255,255,255,.22)}.pill hr{width:1px;height:22px;margin:0;border:0;background:var(--ln)}.pill u{text-decoration:none;color:var(--sub)}
-.bar{padding:22px 19px 0;flex:none}#trk{height:20px;display:flex;align-items:center;touch-action:none;cursor:pointer}.tb{width:100%;height:3px;background:rgba(255,255,255,.3);border-radius:2px}.tb i{display:block;height:100%;background:#fff;border-radius:2px;width:28%}.tm{display:flex;justify-content:space-between;color:var(--sub);font-size:12px;margin-top:4px}
-.ctl{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 0;flex:none}.ctl>button{width:46px;height:46px;border-radius:50%}.ctl .act{background:var(--chip)}#bpp{width:74px!important;height:74px!important;background:#fff;color:#000}
-.hd{display:flex;justify-content:center;padding:28px 0 10px;flex:none;cursor:pointer}.hd span{width:33px;height:3px;border-radius:2px;background:#777}.peek{text-align:center;padding:10px 19px 26px;font-weight:500;font-size:15px;flex:none;cursor:pointer}
-.qw{display:block;flex:1;overflow-y:auto;min-height:0}.qf{display:flex;justify-content:space-between;align-items:center;padding:10px 19px;gap:12px}.qf b{font-size:17px;font-weight:700;display:block}.g{color:var(--sub);font-size:15px}.sv{height:46px;padding:0 24px;border-radius:23px;background:var(--chip);display:flex;align-items:center;gap:10px;font-weight:500;flex:none}.dv{border-top:1px solid var(--ln);margin:8px 0}.qr{display:flex;align-items:center;gap:14px;padding:9px 19px;cursor:pointer}.th{width:52px;height:29px;border-radius:3px;position:relative;flex:none;overflow:hidden}.qt{flex:1;min-width:0}.qt b{display:block;font-size:16px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qt small{color:var(--sub);font-size:14px;white-space:nowrap}.eq{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:6px}.eq i{width:3px;background:#fff;animation:b .8s infinite alternate}.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}@keyframes b{from{height:3px}to{height:14px}}
-#sw{width:52px;height:30px;border-radius:15px;background:#777;padding:4px;display:flex;justify-content:flex-end;cursor:pointer;flex:none}#sw i{width:22px;height:22px;border-radius:50%;background:#fff}
-#al{border-top:1px solid #222;padding-top:6px}.ac-placeholder{display:flex;align-items:center;gap:24px;height:51px;padding:0 16px;font-size:16px}.ft{margin-top:auto;padding:20px 16px 28px;text-align:center;color:var(--sub);font-size:13px}
-/* Static UI mode: both the main screens and player are present in markup. Your own logic can toggle .on/.open/.q/.off and update the IDs directly. */
+  :root { color-scheme: dark; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; margin: 0; }
+  body {
+    background: #0b0c0f;
+    color: #f4f5f7;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+  }
+  .card {
+    width: min(560px, 100%);
+    border: 1px solid #252832;
+    background: linear-gradient(180deg, #14161b, #0f1014);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  }
+  h1 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
+  p { margin: 0; color: #aeb3be; line-height: 1.5; font-size: 14px; }
+  .target {
+    margin: 16px 0;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #101218;
+    border: 1px solid #242833;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background: #8a8f9d;
+  }
+  .dot.ok { background: #62d68a; }
+  .dot.bad { background: #ff7272; }
+  button {
+    width: 100%;
+    margin-top: 12px;
+    border: 0;
+    border-radius: 14px;
+    padding: 13px 16px;
+    background: #f2f3f5;
+    color: #0d0e11;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button:active { transform: scale(.99); }
+  .hint { margin-top: 12px; font-size: 12px; color: #858b97; }
+  code { color: #d5d8df; }
 </style>
 </head>
 <body>
-<div id="app">
-<div class="vs">
-<div class="v on" id="v-home">
-  <div class="hr">
-    <div class="lg"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#f00"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M10.2 9l4.6 3-4.6 3z" fill="#fff"/></svg>Music</div>
-    <div class="ri"><span class="bell"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.1-1.6-5.6-4.5-6.3V4a1.5 1.5 0 00-3 0v.7C7.6 5.4 6 7.9 6 11v5l-2 2v1h16v-1zm-2 1H8v-6c0-2.5 1.5-4.5 4-4.5S16 8.5 16 11z"/></svg><em>1</em></span>
-      <svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg>
-      <i class="av acct"></i>
+  <main class="card">
+    <h1>WeebCentral</h1>
+    <p>This page is only a launcher. It asks the Sekai host to open the real WeebCentral website.</p>
+
+    <div class="target">
+      <span class="dot" id="dot"></span>
+      <span id="statusText">Checking Sekai bridge…</span>
+      <div style="margin-top:8px;color:#d5d8df;">https://weebcentral.com/</div>
     </div>
-  </div>
-  <div class="ch"><button>Thư giãn</button><button>Tập thể dục</button><button>Nạp năng lượng</button><button>Tiệc tùng</button><button>Tập trung</button></div>
-  <div class="qh"><i class="av"></i><div><small>VUSLOTH</small><h3>Phát nhanh</h3></div><svg width="28" height="28" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></div>
-  <div class="qp" id="qp">
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(268 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(228 60% 42%),hsl(288 55% 10%))"><b>UdieNnx - ACIDO III</b><svg class="pn" width="16" height="16" viewBox="0 0 24 24"><path d="M16 9V4h1a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1v5a3 3 0 0 1-3 3v2h6v7l1 1 1-1v-7h6v-2a3 3 0 0 1-3-3z"/></svg></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(321 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(281 60% 42%),hsl(341 55% 10%))"><b>STRUCT - Super Slowed</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(94 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(54 60% 42%),hsl(114 55% 10%))"><b>mua thu cua em</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(147 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(107 60% 42%),hsl(167 55% 10%))"><b>TAN (Audio)</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(200 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(160 60% 42%),hsl(220 55% 10%))"><b>heaven</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(253 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(213 60% 42%),hsl(273 55% 10%))"><b>Home</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(306 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(266 60% 42%),hsl(326 55% 10%))"><b>CAS</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(359 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(319 60% 42%),hsl(19 55% 10%))"><b>trái tim băng giá</b></div>
-    <div class="t" style="background:radial-gradient(circle at 70% 28%,hsl(52 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(12 60% 42%),hsl(72 55% 10%))"><b>1/2</b></div>
-  </div>
-  <div class="dots" id="dots"><i class="on"></i><i></i><i></i></div>
-  <div class="sh"><h3>Recap</h3><svg width="28" height="28" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></div>
-  <div class="row" id="rc"><div class="rc" style="background:linear-gradient(120deg,#c9e24a,#eef56e)">Recap 2026</div><div class="rc" style="background:linear-gradient(120deg,#8f6bff,#ff6bf0)">Recap 2026</div><div class="rc" style="background:linear-gradient(120deg,#2fa8ff,#6fe3ff)">Recap 2026</div></div>
-  <div class="sh"><h3>Nghe lại</h3></div>
-  <div class="row" id="rw">
-    <div class="cd"><div style="background:linear-gradient(135deg,#7242d6,#2388a3)"></div><b>heaven</b><small>VuSloth</small></div>
-    <div class="cd"><div style="background:linear-gradient(135deg,#eb5d7b,#29316d)"></div><b>Home</b><small>VuSloth</small></div>
-    <div class="cd"><div style="background:linear-gradient(135deg,#35a872,#1b435c)"></div><b>CAS</b><small>VuSloth</small></div>
-    <div class="cd"><div style="background:linear-gradient(135deg,#ff9b54,#4e265f)"></div><b>trái tim băng giá</b><small>VuSloth</small></div>
-  </div>
-</div>
 
-<div class="v" id="v-exp">
-  <div class="hr"><h1>Khám phá</h1><div class="ri"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg><i class="av acct"></i></div></div>
-  <div class="sc"><button>Bản phát hành mới</button><button>Bảng xếp hạng</button><button>Tâm trạng và thể loại</button></div>
-  <div class="sh"><h3>Bản phát hành mới</h3><svg width="28" height="28" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></div>
-  <div class="row" id="nr"><div class="cd"><div style="background:linear-gradient(135deg,#7242d6,#2388a3)"></div><b>1/2</b><small>VuSloth</small></div><div class="cd"><div style="background:linear-gradient(135deg,#ef5d5d,#3e1b69)"></div><b>Tình Không Như Ý</b><small>VuSloth</small></div><div class="cd"><div style="background:linear-gradient(135deg,#37b0ff,#1d3b81)"></div><b>Liệu còn cơ hội không</b><small>VuSloth</small></div><div class="cd"><div style="background:linear-gradient(135deg,#5bde94,#204e44)"></div><b>UdieNnx - ACIDO III</b><small>VuSloth</small></div></div>
-  <div class="sh"><h3>Tâm trạng và thể loại</h3></div>
-  <div class="mg" id="mg"><button style="--c:hsl(0 70% 55%)">Thư giãn</button><button style="--c:hsl(47 70% 55%)">Tập thể dục</button><button style="--c:hsl(94 70% 55%)">Nạp năng lượng</button><button style="--c:hsl(141 70% 55%)">Tiệc tùng</button><button style="--c:hsl(188 70% 55%)">Lãng mạn</button><button style="--c:hsl(235 70% 55%)">Tập trung</button><button style="--c:hsl(282 70% 55%)">Ngủ</button><button style="--c:hsl(329 70% 55%)">Đi làm</button></div>
-</div>
+    <button id="openBtn" type="button">OPEN WEeBCENTRAL</button>
 
-<div class="v" id="v-lib">
-  <div class="hr"><h1>Thư viện</h1><div class="ri"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.9 3.9.1.1L9 12H6a7 7 0 1 1 7 7c-1.9 0-3.7-.8-4.9-2.1l-1.4 1.4A9 9 0 1 0 13 3zm-1 5v5l4.3 2.5.7-1.2-3.5-2.1V8z"/></svg><svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 9.5 16c1.6 0 3.1-.6 4.2-1.6l.3.3v.8l5 5 1.5-1.5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg><i class="av acct"></i></div></div>
-  <div class="ch"><button>Nội dung tải xuống</button><button>Danh sách phát</button><button>Podcast</button><button>Nghệ sĩ</button></div>
-  <div class="ls"><span>Hoạt động gần đây <svg width="22" height="22" viewBox="0 0 24 24"><path d="M7.4 8.6 12 13.2l4.6-4.6L18 10l-6 6-6-6z"/></svg></span><svg width="30" height="30" viewBox="0 0 24 24"><path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm8-2h8v8h-8zm2 2v4h4v-4z"/></svg></div>
-  <div id="ll">
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#8a63ff,#f0509a)"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg></div><div class="m"><b>Nhạc đã thích</b><small>Danh sách tự động</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#7242d6,#2388a3)"></div><div class="m"><b>finalpower2.1</b><small>Danh sách phát • VuSloth • 10 bản nhạc</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0-4 0 2 2 0 0 0 4-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#35a872,#1b435c)"></div><div class="m"><b>remix</b><small>Danh sách phát • VuSloth • 8 bản nhạc</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0-4 0 2 2 0 0 0 4-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0-4 0 2 2 0 0 0 4 4z"/></svg></div>
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#ff9b54,#4e265f)"></div><div class="m"><b>HVL</b><small>Đĩa nhạc • RPT MCK • 2026</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#6dcae9,#303a6a)"></div><div class="m"><b>helpful</b><small><span class="e">E</span>Danh sách phát • VuSloth • 239 bản nhạc</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-    <div class="li"><div class="a" style="background:linear-gradient(135deg,#d95d96,#562f75)"></div><div class="m"><b>trung.3</b><small>Danh sách phát • VuSloth • 3 bản nhạc</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-    <div class="li"><div class="a rd" style="background:linear-gradient(135deg,#8a63ff,#f0509a)"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M20 5v14H4V5zm0-2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-8 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6c-1.7 0-4 .8-4 2v1h8v-1c0-1.2-2.3-2-4-2z"/></svg></div><div class="m"><b>TeuYungBoy</b><small>Nghệ sĩ • 38 N người đăng ký</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></div>
-  </div>
-  <div style="height:70px"></div>
-</div>
-<button id="fab"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>Mới</button>
-</div>
-
-<div id="mini">
-  <div class="mm"><div id="mn"><div class="mi" id="mi" style="background:linear-gradient(135deg,#8f6bff,#ff6bf0)"></div><div class="mx"><div id="mt">UdieNnx - ACIDO III (Sped up)</div><div id="ma">VuSloth</div></div></div>
-    <div class="mc"><button><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button><button id="mpp"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg></button><button><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6zM16 6v12h2V6z"/></svg></button></div></div>
-  <div class="mpl"><i id="mf"></i></div>
-</div>
-<nav>
-  <button data-v="home" data-f="homeF" data-o="home"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12h-6v-7h-4v7z"/></svg><span>Trang chủ</span></button>
-  <button data-v="exp" data-f="expF" data-o="exp"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-5.5-2.5 7.5-3.5 3.5-7.5-7.5 3.5L6.5 17.5z"/></svg><span>Khám phá</span></button>
-  <button data-v="lib" data-f="libF" data-o="lib"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M17 3H7a2 2 0 0 0-2 2v16l7-3 7 3V5a2 2 0 0 0-2-2zm0 15-5-2.2L7 18V5h10z"/></svg><span>Thư viện</span></button>
-</nav>
-
-<div id="pl">
-  <div id="bg"></div>
-  <div class="top"><button><svg width="34" height="34" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z" style="transform:rotate(180deg);transform-origin:12px 12px"/></svg></button><div class="seg"><button id="mA"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h4v-8H5v-1a7 7 0 0 1 14 0v1h-4v8h4a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9z"/></svg></button><button id="mV" class="on"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button></div><button><svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0-4 0 2 2 0 0 0 4 4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0-4 0 2 2 0 0 0 4 0z"/></svg></button></div>
-  <div class="art" id="art"><div class="vid" id="vid" style="--g:radial-gradient(circle at 70% 28%,hsl(268 85% 58%/.95),transparent 52%),linear-gradient(160deg,hsl(228 60% 42%),hsl(288 55% 10%))"><div class="fg"></div></div></div>
-  <div class="info"><div class="tt"><h2 id="pt">UdieNnx - ACIDO III (Sped up)</h2><svg width="28" height="28" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></div><div id="pa">VuSloth</div></div>
-  <div class="ac2"><div class="pill on" id="lk"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M9 21h9c.8 0 1.5-.5 1.8-1.2l3-7c.1-.2.2-.5.2-.7v-2c0-1.1-.9-2-2-2h-6.3l.9-4.6v-.3c0-.4-.2-.8-.4-1.1L14.2 1 7.6 7.6C7.2 8 7 8.4 7 9v10c0 1.1.9 2 2 2zM9 9l4.3-4.3L12 10h9v2l-3 7H9zM1 9h4v12H1z"/></svg><hr><span id="lc">3,5 N</span><u>•</u><span>78</span><hr><svg width="26" height="26" viewBox="0 0 24 24" style="transform:rotate(180deg)"><path d="M9 21h9c.8 0 1.5-.5 1.8-1.2l3-7c.1-.2.2-.5.2-.7v-2c0-1.1-.9-2-2-2h-6.3l.9-4.6v-.3c0-.4-.2-.8-.4-1.1L14.2 1 7.6 7.6C7.2 8 7 8.4 7 9v10c0 1.1.9 2 2 2zM9 9l4.3-4.3L12 10h9v2l-3 7H9zM1 9h4v12H1z"/></svg></div><div class="pill"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 4c0-1.1-.9-2-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14l4 4zM20 4v13.2L18.8 16H4V4zM6 12h12v2H6zm0-3h12v2H6zm0-3h12v2H6z"/></svg><span>88</span></div><div class="pill"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M14 10H2v2h12zm0-4H2v2h12zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2zM2 16h8v-2H2z"/></svg><span>Lưu</span></div></div>
-  <div class="bar"><div id="trk"><div class="tb"><i id="fill"></i></div></div><div class="tm"><span id="cur">0:00</span><span id="dur">1:22</span></div></div>
-  <div class="ctl"><button id="bs"><svg width="26" height="26" viewBox="0 0 24 24"><path d="m10.6 9.2-5.2-5.2L4 5.4l5.2 5.2zM14.5 4l2 2L4 18.6 5.4 20 18 7.5l2 2V4zm.3 9.4-1.4 1.4 3.1 3.1-2 2H20v-5.5l-2 2z"/></svg></button><button><svg width="42" height="42" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button><button id="bpp"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg></button><button><svg width="42" height="42" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6zM16 6v12h2V6z"/></svg></button><button id="br"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg></button></div>
-  <div class="hd" id="hd"><span></span></div>
-  <div class="peek" id="peek">Tuyển tập UdieNnx - ACIDO III (Sped up)</div>
-  <div class="qw">
-    <div class="qf"><div style="min-width:0"><div class="g">Đang phát từ</div><b>Tuyển tập UdieNnx - ACIDO III (Sped…</b></div><div class="sv"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M14 10H2v2h12zm0-4H2v2h12zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2zM2 16h8v-2H2z"/></svg>Lưu</div></div>
-    <div id="cq"><div class="qr"><div class="th" style="background:linear-gradient(135deg,#7242d6,#2388a3)"><span class="eq"><i></i><i></i><i></i></span></div><div class="qt"><b>UdieNnx - ACIDO III (Sped up)</b><small>VuSloth • 249 N lượt xem</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 9h16v2H4zm0 4h16v2H4z"/></svg></div></div>
-    <div class="dv"></div>
-    <div class="qf"><div><b>Tự động phát</b><div class="g">Thêm nội dung tương tự để nghe liên tục</div></div><div id="sw"><i></i></div></div>
-    <div class="cq"><button class="on">Tất cả</button><button>Quen thuộc</button><button>Khám phá</button><button>Tiệc tùng</button><button>Hài hước</button></div>
-    <div id="uq">
-      <div class="qr"><div class="th" style="background:linear-gradient(135deg,#2388a3,#5a2e87)"></div><div class="qt"><b>STRUCT - Super Slowed</b><small>VuSloth • 572 N lượt xem</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 9h16v2H4zm0 4h16v2H4z"/></svg></div>
-      <div class="qr"><div class="th" style="background:linear-gradient(135deg,#c44d7a,#2c3c6e)"></div><div class="qt"><b>mua thu cua em</b><small>VuSloth • 231 N lượt xem</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 9h16v2H4zm0 4h16v2H4z"/></svg></div>
-      <div class="qr"><div class="th" style="background:linear-gradient(135deg,#2da6ef,#143c6d)"></div><div class="qt"><b>TAN (Audio)</b><small>VuSloth • 268 N lượt xem</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 9h16v2H4zm0 4h16v2H4z"/></svg></div>
-      <div class="qr"><div class="th" style="background:linear-gradient(135deg,#65c878,#224b45)"></div><div class="qt"><b>heaven</b><small>VuSloth • 357 N lượt xem</small></div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 9h16v2H4zm0 4h16v2H4z"/></svg></div>
+    <div class="hint">
+      Uses <code>sekaiBridge.openUrl()</code>. No iframe, fetch, XHR, proxy, or fake website is used here.
     </div>
-  </div>
-</div>
+  </main>
 
-<div id="ac" style="display:none;position:absolute;inset:0;background:#000;z-index:30;flex-direction:column">
-  <div class="ah" style="height:56px;display:flex;align-items:center;gap:24px;padding:0 16px;font-size:20px;font-weight:500"><button><svg width="28" height="28" viewBox="0 0 24 24"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4l5.6 5.6L5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6z"/></svg></button>Tài khoản</div>
-  <div class="pf" style="display:flex;align-items:center;gap:16px;padding:14px 16px 0"><i class="av"></i><div style="flex:1;font-size:17px">VuSloth<small style="display:block;font-size:17px;color:var(--sub)">@VuSloth</small></div><svg width="30" height="30" viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></div>
-  <div class="gl" style="color:#3ea6ff;padding:14px 16px 26px 72px;font-size:15px">Quản lý Tài khoản Google của bạn</div>
-  <div id="al"><div class="ac-placeholder"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 5v14H4V5zm0-2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-8 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6c-1.7 0-4 .8-4 2v1h8v-1c0-1.2-2.3-2-4-2z"/></svg><span>Kênh của bạn</span></div><div class="ac-placeholder"><span>↓</span><span>Nội dung tải xuống</span></div><div class="ac-placeholder"><span>◷</span><span>Video đã xem</span></div><div class="ac-placeholder"><span>▣</span><span>Recap của bạn</span></div><div class="ac-placeholder"><span>★</span><span>Huy hiệu</span></div><div class="ac-placeholder"><span>◎</span><span>Chuyển đổi tài khoản</span></div><div class="ac-placeholder"><span>⚙</span><span>Cài đặt</span></div><div class="ac-placeholder"><span>?</span><span>Trợ giúp và phản hồi</span></div></div>
-  <div class="ft">Chính sách quyền riêng tư &nbsp;•&nbsp; Điều khoản dịch vụ</div>
-</div>
-</div>
-</div>
+<script>
+(() => {
+  const TARGET_URL = 'https://weebcentral.com/';
+  const dot = document.getElementById('dot');
+  const statusText = document.getElementById('statusText');
+  const openBtn = document.getElementById('openBtn');
+
+  function getBridge() {
+    const bridge = window.sekaiBridge;
+    return bridge && typeof bridge.openUrl === 'function' ? bridge : null;
+  }
+
+  function updateBridgeStatus() {
+    const bridge = getBridge();
+    if (bridge) {
+      dot.className = 'dot ok';
+      statusText.textContent = 'Sekai bridge detected.';
+    } else {
+      dot.className = 'dot bad';
+      statusText.textContent = 'Sekai bridge not detected. Run this inside Sekai.';
+    }
+    return bridge;
+  }
+
+  function openTarget() {
+    const bridge = updateBridgeStatus();
+    if (!bridge) return;
+
+    statusText.textContent = 'Opening WeebCentral…';
+    try {
+      bridge.openUrl(TARGET_URL);
+    } catch (err) {
+      dot.className = 'dot bad';
+      statusText.textContent = 'openUrl() failed: ' + (err?.message || String(err));
+    }
+  }
+
+  openBtn.addEventListener('click', openTarget);
+  updateBridgeStatus();
+})();
+</script>
 </body>
 </html>
